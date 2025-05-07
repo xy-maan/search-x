@@ -22,8 +22,23 @@
 </div>
 <div class="results-container">
     <div id="results"></div>
-    <nav>
-        <ul class="pagination justify-content-center" id="pagination"></ul>
+    <nav class="mt-4">
+        <div class="pagination-dropdown-container">
+            <span class="page-label">Select Page</span>
+            <div class="pagination-dropdown-wrapper">
+                <div class="custom-dropdown-display">
+                    <span id="paginationDropdownText">Page 1</span>
+                    <span class="custom-dropdown-arrow">
+                        <svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="5,7 9,13 13,7" fill="#e29f0f"/>
+                        </svg>
+                    </span>
+                </div>
+                <select class="form-select w-auto pagination-dropdown" id="paginationDropdown" aria-label="Page selector" style="opacity:0;position:absolute;left:0;top:0;width:100%;height:100%;cursor:pointer;">
+                    <!-- Options will be populated by JS -->
+                </select>
+            </div>
+        </div>
     </nav>
 </div>
 <style>
@@ -63,6 +78,25 @@ input:checked + .toggle-slider {
 }
 input:checked + .toggle-slider:before {
   transform: translateX(20px);
+}
+.pagination-dropdown-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.page-label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+.pagination-dropdown-wrapper {
+  display: flex;
+  align-items: center;
+}
+.pagination-dropdown-arrow {
+  margin-left: 0.5rem;
+  font-size: 1.2rem;
 }
 </style>
 @section Scripts {

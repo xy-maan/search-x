@@ -5,7 +5,7 @@ function getQueryParam(name) {
 }
 const searchInput = document.getElementById('searchInput');
 const resultsDiv = document.getElementById('results');
-const paginationUl = document.getElementById('pagination');
+const paginationDropdown = document.getElementById('paginationDropdown');
 const relevanceToggle = document.getElementById('relevanceToggle');
 const RESULTS_PER_PAGE = 20;
 let allResults = [];
@@ -17,11 +17,11 @@ if (relevanceToggle) relevanceToggle.checked = relevance;
 async function doSearch(q, rel) {
 	if (!q) {
 		resultsDiv.innerHTML = '';
-		paginationUl.innerHTML = '';
+		paginationDropdown.style.display = 'none';
 		return;
 	}
 	resultsDiv.innerHTML = '<div class="text-center text-secondary">Searching...</div>';
-	paginationUl.innerHTML = '';
+	paginationDropdown.style.display = 'none';
 	try {
 		const res = await fetch(`/api/search?query=${encodeURIComponent(q)}&relevance=${rel ? '1' : '0'}`);
 		const data = await res.json();
@@ -30,13 +30,13 @@ async function doSearch(q, rel) {
 		renderResults();
 	} catch (err) {
 		resultsDiv.innerHTML = '<div class="text-center text-danger">Error fetching results.</div>';
-		paginationUl.innerHTML = '';
+		paginationDropdown.style.display = 'none';
 	}
 }
 function renderResults() {
 	if (!allResults || allResults.length === 0) {
 		resultsDiv.innerHTML = '<div class="text-center text-danger">No results found.</div>';
-		paginationUl.innerHTML = '';
+		paginationDropdown.style.display = 'none';
 		return;
 	}
 	const start = (currentPage - 1) * RESULTS_PER_PAGE;
@@ -52,26 +52,33 @@ function renderResults() {
 }
 function renderPagination() {
 	const totalPages = Math.ceil(allResults.length / RESULTS_PER_PAGE);
+	const dropdown = document.getElementById('paginationDropdown');
+	const display = document.getElementById('paginationDropdownText');
+	if (!dropdown || !display) return;
+	dropdown.innerHTML = '';
 	if (totalPages <= 1) {
-		paginationUl.innerHTML = '';
+		dropdown.style.display = 'none';
+		display.textContent = '';
 		return;
 	}
-	let html = '';
+	dropdown.style.display = '';
 	for (let i = 1; i <= totalPages; i++) {
-		html += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+		const option = document.createElement('option');
+		option.value = i;
+		option.textContent = `Page ${i}`;
+		if (i === currentPage) option.selected = true;
+		dropdown.appendChild(option);
 	}
-	paginationUl.innerHTML = html;
-	Array.from(paginationUl.querySelectorAll('a.page-link')).forEach(link => {
-		link.addEventListener('click', function (e) {
-			e.preventDefault();
-			const page = parseInt(this.getAttribute('data-page'));
-			if (!isNaN(page)) {
-				currentPage = page;
-				renderResults();
-				window.scrollTo({ top: 0, behavior: 'smooth' });
-			}
-		});
-	});
+	display.textContent = `Page ${currentPage}`;
+	dropdown.onchange = function () {
+		const page = parseInt(this.value);
+		if (!isNaN(page)) {
+			currentPage = page;
+			display.textContent = `Page ${currentPage}`;
+			renderResults();
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+	};
 }
 if (query) doSearch(query, relevance);
 document.getElementById('searchForm')?.addEventListener('submit', function (e) {
