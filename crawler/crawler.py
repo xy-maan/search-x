@@ -9,23 +9,19 @@ DB_CONFIG = {
 }
 
 class Crawler:
-    def __init__(self, db, max_pages=100000, delay=0.5):
+    def __init__(self, db, max_pages=2000, delay=0.5):
         self.db = db
-        self.max_pages = max_pages
+        self.max_pages = max_pages  # max per seed
         self.delay = delay
         self.visited = set()
-        self.queue = []
 
-    def add_seeds(self, seeds):
-        for url in seeds:
-            if url not in self.visited:
-                self.queue.append(url)
-
-    def crawl(self):
+    def crawl_seed(self, seed):
+        queue = [seed]
+        local_visited = set()
         count = 0
-        while self.queue and count < self.max_pages:
-            url = self.queue.pop(0)
-            if url in self.visited:
+        while queue and count < self.max_pages:
+            url = queue.pop(0)
+            if url in self.visited or url in local_visited:
                 continue
             print(f"Crawling: {url}")
             text, soup = scrape_url(url)
@@ -33,19 +29,25 @@ class Crawler:
                 self.db.save_page(url, text)
                 count += 1
             self.visited.add(url)
+            local_visited.add(url)
             if soup:
                 for link in extract_links(soup, url):
-                    if link not in self.visited and len(self.queue) < self.max_pages:
-                        self.queue.append(link)
+                    if link not in self.visited and link not in local_visited and len(queue) < self.max_pages:
+                        queue.append(link)
             time.sleep(self.delay)
-        print(f"Crawling finished. Total pages crawled: {count}")
+        print(f"Seed '{seed}' finished. Pages crawled: {count}")
+
+    def crawl(self, seeds):
+        for seed in seeds:
+            self.crawl_seed(seed)
+        print(f"Crawling finished for all seeds.")
 
 if __name__ == '__main__':
     db = Database(DB_CONFIG)
     seeds = [
         'https://www.geeksforgeeks.org/',
+        'https://www.w3schools.com/',
     ]
-    crawler = Crawler(db, max_pages=1000)
-    crawler.add_seeds(seeds)
-    crawler.crawl()
+    crawler = Crawler(db, max_pages=20)
+    crawler.crawl(seeds)
     db.close()

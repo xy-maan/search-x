@@ -1,0 +1,70 @@
+@{
+    ViewData["Title"] = "Search Results - search X";
+    var query = Context.Request.Query["q"].ToString();
+}
+<div class="search-bar-top">
+    <div class="site-title" onclick="window.location='/'" style="cursor:pointer;">search X</div>
+    <div class="search-box">
+        <form id="searchForm" class="search-form w-100">
+            <input id="searchInput" class="form-control" type="search" placeholder="Type your search..." aria-label="Search" value="@query" />
+            <button class="search-btn" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+    </div>
+    <div class="relevance-toggle ms-3">
+        <label class="form-check-label me-2" for="relevanceToggle">Sort by Relevance</label>
+        <label class="toggle-switch">
+            <input type="checkbox" id="relevanceToggle" checked />
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+</div>
+<div class="results-container">
+    <div id="results"></div>
+    <nav>
+        <ul class="pagination justify-content-center" id="pagination"></ul>
+    </nav>
+</div>
+<style>
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  vertical-align: middle;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #888;
+  border-radius: 20px;
+  transition: .4s;
+}
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: .4s;
+}
+input:checked + .toggle-slider {
+  background-color: #4caf50;
+}
+input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+</style>
+@section Scripts {
+    <script src="~/js/results.js"></script>
+}

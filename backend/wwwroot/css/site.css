@@ -1,0 +1,131 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* Custom search-x styles */
+body {
+    background: #181818;
+    color: #e8eaed;
+    margin: 0;
+    min-height: 100vh;
+}
+.center-viewport {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.site-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #3eb489;
+    text-shadow: 0 2px 8px #000a;
+    font-family: 'Product Sans', Arial, Helvetica, sans-serif;
+    margin-bottom: 2rem;
+}
+.search-bar-top {
+    width: 100vw;
+    background: #181818;
+    padding: 1.5rem 0 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid #222;
+}
+.search-box {
+    width: 700px;
+    max-width: 90vw;
+    background: none;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+}
+.search-form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border-radius: 2rem;
+    background: #303134;
+    box-shadow: 0 1px 6px 0 #0003;
+    padding: 0.25rem 0.5rem 0.25rem 2rem;
+}
+#searchInput {
+    background: transparent;
+    border: none;
+    color: #e8eaed;
+    border-radius: 2rem 0 0 2rem;
+    font-size: 1.2rem;
+    box-shadow: none;
+    outline: none;
+    flex: 1;
+    padding: 0;
+    line-height: normal;
+    height: 3.2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    vertical-align: middle;
+    caret-color: #8ab4f8;
+    width: 90%;
+    padding-left: 1.5rem;
+}
+#searchInput::placeholder {
+    color: #b0b0b0;
+}
+.search-btn {
+    border-radius: 0 2rem 2rem 0;
+    background: #303134;
+    border: none;
+    color: #e29f0f;
+    font-size: 1.5rem;
+    padding: 0.5rem 1.5rem;
+    transition: background 0.2s;
+}
+.search-btn:hover {
+    background: #44464a;
+}
+.results-container {
+    margin: 2rem auto 0 auto;
+    max-width: 700px;
+    width: 95vw;
+}
+.result-link {
+    font-size: 1.1rem;
+    color: #8ab4f8;
+    word-break: break-all;
+}
+.result-snippet {
+    color: #b0b0b0;
+}
+.card {
+    background: #202124;
+    border: none;
+    color: #e8eaed;
+}
+.mt-4 {
+    margin-top: 1.5rem !important;
+}
+.pagination {
+    margin-top: 2rem;
+}
