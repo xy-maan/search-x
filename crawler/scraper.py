@@ -1,44 +1,33 @@
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+import requests
 from bs4 import BeautifulSoup
-import traceback
+import re
+from urllib.parse import urljoin
 
 def scrape_url(url):
-    options = Options()
-    options.headless = True
-    driver = webdriver.Firefox(options=options)
     try:
-        driver.get(url)
-        html = driver.page_source
-        soup = BeautifulSoup(html, 'html.parser')
-        for tag in soup(['script', 'style', 'head', 'meta', 'noscript']):
-            tag.decompose()
-        hidden_tags = []
-        for tag in soup.find_all(style=True):
-            style_attr = tag.get('style')
-            if style_attr and isinstance(style_attr, str):
-                style = style_attr.lower()
-                if 'display:none' in style or 'visibility:hidden' in style:
-                    hidden_tags.append(tag)
-        for tag in hidden_tags:
-            tag.decompose()
-        for tag in soup(['img', 'video', 'audio', 'embed', 'object', 'iframe', 'source', 'track', 'canvas']):
-            tag.decompose()
-        text = ' '.join(soup.stripped_strings)
-        return text, soup
+        resp = requests.get(url, timeout=10)
+        content_type = resp.headers.get('Content-Type', '')
+        if resp.status_code == 200 and re.search(r'text/html|application/xhtml\+xml', content_type):
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            # Remove media/embedded content and non-text tags
+            for tag in soup(['img', 'video', 'audio', 'embed', 'object', 'iframe',
+                            'source', 'track', 'canvas', 'script', 'style']):
+                tag.decompose()
+            # Extract clean text
+            text = soup.get_text(separator=' ', strip=True)
+            return text, soup
+        else:
+            print(f"Non-HTML or bad status for {url}: {resp.status_code}, {content_type}")
     except Exception as e:
-        print(f'Selenium scrape error for {url}: {e}')
-        traceback.print_exc()
-    finally:
-        driver.quit()
+        print(f"Scrape error for {url}: {e}")
     return '', None
 
 def extract_links(soup, base_url):
-    from urllib.parse import urljoin
     links = set()
     for tag in soup.find_all('a', href=True):
         href = tag['href']
-        abs_url = urljoin(base_url, href)
-        if abs_url.startswith('http') and '#' not in abs_url:
+        # Clean URL fragments and normalize
+        abs_url = urljoin(base_url, href.split('#')[0])
+        if abs_url.startswith('http'):
             links.add(abs_url)
     return links

@@ -46,8 +46,10 @@ if __name__ == '__main__':
     db = Database(DB_CONFIG)
     seeds = [
         'https://www.geeksforgeeks.org/',
-        'https://www.w3schools.com/',
+        'https://realpython.com',
+        'https://www.digitalocean.com/community',
+        'https://www.tutorialspoint.com'
     ]
-    crawler = Crawler(db, max_pages=20)
+    crawler = Crawler(db, max_pages=2500)
     crawler.crawl(seeds)
     db.close()
